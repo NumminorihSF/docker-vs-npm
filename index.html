@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Shower Presentation Engine</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="shower/themes/ribbon/styles/styles.css">
+    <style>
+        .shower {
+            --slide-ratio: calc(16 / 9);
+        }
+    </style>
+</head>
+<body class="shower list">
+
+    <header class="caption">
+        <h1>Docker vs. npm</h1>
+    </header>
+
+    <section class="slide">
+        <h2>Docker vs. npm</h2>
+        <p>Brought to you by <a href="https://github.com/NumminorihSF">Konstantin Petryaev</a></p>
+        <style>
+            #cover h2 {
+                margin: 30px 0 0;
+                text-align: center;
+                font-size: 70px;
+            }
+
+            #cover p {
+                margin: 10px 0 0;
+                text-align: center;
+                font-style: italic;
+                font-size: 20px;
+            }
+        </style>
+    </section>
+
+    <section class="slide">
+        <h2>What is docker</h2>
+        <img src="images/docker.png" width="auto" height="200px" alt="docker logo" />
+        <p>Docker is a computer program that performs operating-system-level virtualization, also known as "containerization".</p>
+    </section>
+
+    <section class="slide">
+        <h2>Why do we use docker</h2>
+        <ul>
+            <li>Clean env</li>
+            <li class="next">Reproducible builds</li>
+            <li class="next">Fast builds</li>
+            <li class="next"><code>Dockerfile</code> provides instruction "how to build this app?"</li>
+        </ul>
+    </section>
+
+    <section class="slide">
+        <h2>What is npm</h2>
+        <img src="images/npm.png" width="auto" height="200px" alt="npm logo" />
+        <p>npm is the package manager for JavaScript and the world’s largest software registry.</p>
+    </section>
+
+    <section class="slide">
+        <h2>Why do we use npm</h2>
+        <ul>
+            <li>It's useful package manager for node</li>
+            <li class="next">Reproducible builds</li>
+            <li class="next">Universal task runner for node.js and frontend</li>
+        </ul>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:10.11.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code>ENV NODE_ENV=${APP_ENV:-development}</code>
+            <code>COPY package.json ./</code>
+            <code>RUN apk add bash</code>
+            <code>RUN apk add --no-cache --virtual .gyp \</code>
+            <code>      python make g++ zlib-dev git python build-base autoconf automake nasm \</code>
+            <code>    && npm install \</code>
+            <code>    && apk del .gyp</code>
+            <code>COPY . .</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:<mark>10.11.0</mark>-alpine <strong class="next"># Use LTS version</strong></code>
+            <code>ARG APP_ENV</code>
+            <code>ENV NODE_ENV=${APP_ENV:-development}</code>
+            <code>COPY package.json ./</code>
+            <code>RUN apk add bash</code>
+            <code>RUN apk add --no-cache --virtual .gyp \</code>
+            <code>      python make g++ zlib-dev git python build-base autoconf automake nasm \</code>
+            <code>    && npm install \</code>
+            <code>    && apk del .gyp</code>
+            <code>COPY . .</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:<mark>8.12.0</mark>-alpine <strong># Use LTS version</strong></code>
+            <code>ARG APP_ENV</code>
+            <code>ENV NODE_ENV=${APP_ENV:-development}</code>
+            <code>COPY package.json ./</code>
+            <code>RUN apk add bash</code>
+            <code>RUN apk add --no-cache --virtual .gyp \</code>
+            <code>      python make g++ zlib-dev git python build-base autoconf automake nasm \</code>
+            <code>    && npm install \</code>
+            <code>    && apk del .gyp</code>
+            <code>COPY . .</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code><mark>ARG APP_ENV</mark> <strong class="next"># Used for build any application in company</strong></code>
+            <code>ENV NODE_ENV=${APP_ENV:-development}</code>
+            <code>COPY package.json ./</code>
+            <code>RUN apk add bash</code>
+            <code>RUN apk add --no-cache --virtual .gyp \</code>
+            <code>      python make g++ zlib-dev git python build-base autoconf automake nasm \</code>
+            <code>    && npm install \</code>
+            <code>    && apk del .gyp</code>
+            <code>COPY . .</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code><mark>ENV NODE_ENV=${APP_ENV:-development}</mark> <strong class="next"># Dangerous sometimes</strong></code>
+            <code>COPY package.json ./</code>
+            <code>RUN apk add bash</code>
+            <code>RUN apk add --no-cache --virtual .gyp \</code>
+            <code>      python make g++ zlib-dev git python build-base autoconf automake nasm \</code>
+            <code>    && npm install \</code>
+            <code>    && apk del .gyp</code>
+            <code>COPY . .</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code>ENV NODE_ENV=${APP_ENV:-development}</code>
+            <code><mark>COPY package.json ./</mark> <strong class="next"># Don't forget lock file</strong></code>
+            <code>RUN apk add bash</code>
+            <code>RUN apk add --no-cache --virtual .gyp \</code>
+            <code>      python make g++ zlib-dev git python build-base autoconf automake nasm \</code>
+            <code>    && npm install \</code>
+            <code>    && apk del .gyp</code>
+            <code>COPY . .</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code>ENV NODE_ENV=${APP_ENV:-development}</code>
+            <code><mark>COPY package.json package-lock.json ./</mark> <strong># Don't forget lock file</strong></code>
+            <code>RUN apk add bash</code>
+            <code>RUN apk add --no-cache --virtual .gyp \</code>
+            <code>      python make g++ zlib-dev git python build-base autoconf automake nasm \</code>
+            <code>    && npm install \</code>
+            <code>    && apk del .gyp</code>
+            <code>COPY . .</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code>ENV NODE_ENV=${APP_ENV:-development}</code>
+            <code>COPY package.json package-lock.json ./</code>
+            <code><mark>RUN apk add bash</mark> <strong class="next"># Runs command inside container</strong></code>
+            <code>RUN apk add --no-cache --virtual .gyp \</code>
+            <code>      python make g++ zlib-dev git python build-base autoconf automake nasm \</code>
+            <code>    && npm install \</code>
+            <code>    && apk del .gyp</code>
+            <code>COPY . .</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code>ENV NODE_ENV=${APP_ENV:-development}</code>
+            <code>COPY package.json package-lock.json ./</code>
+            <code>RUN apk add bash</code>
+            <code>RUN apk add --no-cache --virtual .gyp \</code>
+            <code>      python make g++ zlib-dev git python build-base autoconf automake nasm \</code>
+            <code>    && <mark>npm install</mark> \ <strong class="next"># Use <mark>npm ci</mark></strong></code>
+            <code>    && apk del .gyp</code>
+            <code>COPY . .</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Why should i use <code>npm ci</code></h2>
+        <ul>
+            <li>It's a command for CI. Surprise</li>
+            <li>It's faster than <code>npm i</code></li>
+            <li>It's clean installation</li>
+            <li>It fails if package.json not match lock file, it fails</li>
+            <li>It does not update lock file. Just use it for installation</li>
+        </ul>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code>ENV NODE_ENV=${APP_ENV:-development}</code>
+            <code>COPY package.json package-lock.json ./</code>
+            <code>RUN apk add bash</code>
+            <code>RUN apk add --no-cache --virtual .gyp \</code>
+            <code>      python make g++ zlib-dev git python build-base autoconf automake nasm \</code>
+            <code>    && <mark>npm install</mark> \ <strong># Use <mark>npm ci</mark></strong></code>
+            <code>    && apk del .gyp</code>
+            <code>COPY . .</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code>ENV NODE_ENV=${APP_ENV:-development}</code>
+            <code>COPY package.json package-lock.json ./</code>
+            <code>RUN apk add bash</code>
+            <code>RUN apk add --no-cache --virtual .gyp \</code>
+            <code>      python make g++ zlib-dev git python build-base autoconf automake nasm \</code>
+            <code>    && <mark>npm ci</mark> \ <strong># Use <mark>npm ci</mark></strong></code>
+            <code>    && apk del .gyp</code>
+            <code>COPY . .</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code>ENV NODE_ENV=${APP_ENV:-development}</code>
+            <code>COPY package.json package-lock.json ./</code>
+            <code>RUN apk add bash</code>
+            <code>RUN apk add --no-cache --virtual .gyp \</code>
+            <code>      python make g++ zlib-dev git python build-base autoconf automake nasm \</code>
+            <code>    && npm ci \</code>
+            <code>    && apk del .gyp</code>
+            <code><mark>COPY . .</mark> <strong class="next"># Copies <mark>all</mark> files into container</strong></code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Layers</h2>
+        <ul>
+            <li>Every command creates new layer</li>
+            <li class="next">Every layer is read-only</li>
+            <li class="next">Makes build faster</li>
+            <li class="next">Makes build slower in case of wrong usage =(</li>
+        </ul>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code>ENV NODE_ENV=${APP_ENV:-development}</code>
+            <code>COPY package.json package-lock.json ./</code>
+            <code>RUN apk add bash</code>
+            <code>RUN apk add --no-cache --virtual .gyp \</code>
+            <code>      python make g++ zlib-dev git python build-base autoconf automake nasm \</code>
+            <code>    && npm ci \</code>
+            <code>    <mark>&& apk del .gyp</mark> <strong class="next"># Remove</strong></code>
+            <code>COPY . .</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code>ENV NODE_ENV=${APP_ENV:-development}</code>
+            <code>COPY package.json package-lock.json ./</code>
+            <code>RUN apk add bash</code>
+            <code>RUN apk add --no-cache --virtual .gyp \</code>
+            <code>      python make g++ zlib-dev git python build-base autoconf automake nasm \</code>
+            <code>    && npm ci \</code>
+            <code>COPY . .</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code>ENV NODE_ENV=${APP_ENV:-development}</code>
+            <code>COPY package.json package-lock.json ./</code>
+            <code>RUN apk add bash</code>
+            <code>RUN apk add --no-cache <mark>--virtual .gyp</mark> \ <strong class="next"># Remove</strong></code>
+            <code>      python make g++ zlib-dev git python build-base autoconf automake nasm \</code>
+            <code>    && npm ci</code>
+            <code>COPY . .</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code>ENV NODE_ENV=${APP_ENV:-development}</code>
+            <code>COPY package.json package-lock.json ./</code>
+            <code>RUN apk add bash</code>
+            <code>RUN apk add --no-cache \</code>
+            <code>      python make g++ zlib-dev git python build-base autoconf automake nasm \</code>
+            <code>    && npm ci</code>
+            <code>COPY . .</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code>ENV NODE_ENV=${APP_ENV:-development}</code>
+            <code>COPY package.json package-lock.json ./</code>
+            <code>RUN apk add bash</code>
+            <code>RUN apk add --no-cache \</code>
+            <code>      python make g++ zlib-dev git python build-base autoconf automake nasm \</code>
+            <code>    && npm ci</code>
+            <code><mark>COPY . .</mark></code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>.git</code>
+            <code>node_modules</code>
+            <code>configs</code>
+            <code>dists</code>
+            <code>docker's files</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code>ENV NODE_ENV=${APP_ENV:-development}</code>
+            <code>COPY package.json package-lock.json ./</code>
+            <code>RUN apk add bash</code>
+            <code>RUN apk add --no-cache \</code>
+            <code>      python make g++ zlib-dev git python build-base autoconf automake nasm \</code>
+            <code>    && npm ci</code>
+            <code><mark>COPY . .</mark> <strong># Use ignore-file or copy only specific files</strong></code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code>ENV NODE_ENV=${APP_ENV:-development}</code>
+            <code>COPY package.json package-lock.json ./</code>
+            <code>RUN apk add bash</code>
+            <code>RUN apk add --no-cache \</code>
+            <code>      python make g++ zlib-dev git python build-base autoconf automake nasm \</code>
+            <code>    <mark>&& npm ci</mark> <strong class="next"># Move into separated command</strong></code>
+            <code>COPY . .</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code>ENV NODE_ENV=${APP_ENV:-development}</code>
+            <code>COPY package.json package-lock.json ./</code>
+            <code>RUN apk add bash</code>
+            <code>RUN apk add --no-cache \</code>
+            <code>      python make g++ zlib-dev git python build-base autoconf automake nasm</code>
+            <code><mark>RUN npm ci</mark> <strong># Move into separated command</strong></code>
+            <code>COPY . .</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code>ENV NODE_ENV=${APP_ENV:-development}</code>
+            <code><mark>COPY package.json package-lock.json ./</mark> <strong class="next"># Move after the <mark>apk add</mark></strong></code>
+            <code>RUN apk add bash</code>
+            <code>RUN apk add --no-cache \</code>
+            <code>      python make g++ zlib-dev git python build-base autoconf automake nasm</code>
+            <code>RUN npm ci</code>
+            <code>COPY . .</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code>ENV NODE_ENV=${APP_ENV:-development}</code>
+            <code>RUN apk add bash</code>
+            <code>RUN apk add --no-cache \</code>
+            <code>      python make g++ zlib-dev git python build-base autoconf automake nasm</code>
+            <code><mark>COPY package.json package-lock.json ./</mark> <strong># Move after the <mark>apk add</mark></strong></code>
+            <code>RUN npm ci</code>
+            <code>COPY . .</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code>ENV NODE_ENV=${APP_ENV:-development}</code>
+            <code><mark>RUN apk add bash</mark> <strong class="next"># Join with next command</strong></code>
+            <code>RUN apk add --no-cache \</code>
+            <code>      python make g++ zlib-dev git python build-base autoconf automake nasm</code>
+            <code>COPY package.json package-lock.json ./</code>
+            <code>RUN npm ci</code>
+            <code>COPY . .</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code>ENV NODE_ENV=${APP_ENV:-development}</code>
+            <code>RUN apk add --no-cache \</code>
+            <code>      <mark>bash</mark> python make g++ zlib-dev git python build-base autoconf automake nasm</code>
+            <code>COPY package.json package-lock.json ./</code>
+            <code>RUN npm ci</code>
+            <code>COPY . .</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2 class="shout">Do you see the problem?</h2>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code><mark>ENV NODE_ENV=${APP_ENV:-development}</mark> <strong># And now?</strong></code>
+            <code>RUN apk add --no-cache \</code>
+            <code>      bash python make g++ zlib-dev git python build-base autoconf automake nasm</code>
+            <code>COPY package.json package-lock.json ./</code>
+            <code><mark>RUN npm ci</mark></code>
+            <code>COPY . .</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Try to build production</h2>
+        <ul>
+            <li class="next">You can't do it</li>
+            <li class="next"><code>NODE_ENV=1 npm i</code> and <code>NODE_ENV=production npm i</code> do different things</li>
+            <li class="next">Use <code>NODE_ENV=non-production-to-install-dev-dependencies npm i</code></li>
+            <li class="next">Or use <code>npm --production=false i</code></li>
+        </ul>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code>ENV NODE_ENV=${APP_ENV:-development}</code>
+            <code>RUN apk add --no-cache \</code>
+            <code>      bash python make g++ zlib-dev git python build-base autoconf automake nasm</code>
+            <code>COPY package.json package-lock.json ./</code>
+            <code><mark>RUN npm --production=false ci</mark></code>
+            <code>COPY . .</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code><mark>ENV NODE_ENV=${APP_ENV:-development}</mark> <strong class="next"># Do we need to test development env?</strong></code>
+            <code>RUN apk add --no-cache \</code>
+            <code>      bash python make g++ zlib-dev git python build-base autoconf automake nasm</code>
+            <code>COPY package.json package-lock.json ./</code>
+            <code>RUN npm --production=false ci</code>
+            <code>COPY . .</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Why do we use "development"</h2>
+        <ul>
+            <li>To have different behavior for production and test builds</li>
+            <li class="next">Different behavior means: different urls for api, different hostname...</li>
+        </ul>
+    </section>
+
+    <section class="slide">
+        <h2 class="shout">Use env for this</h2>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code><mark>ARG APP_API_URL</mark></code>
+            <code><mark>ENV NODE_ENV=production</mark></code>
+            <code><mark>ENV APP_API_URL=${APP_API_URL}</mark></code>
+            <code>RUN apk add --no-cache \</code>
+            <code>      bash python make g++ zlib-dev git python build-base autoconf automake nasm</code>
+            <code>COPY package.json package-lock.json ./</code>
+            <code>RUN npm --production=false ci</code>
+            <code>COPY . .</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2 class="shout">Any questions?</h2>
+    </section>
+
+    <footer class="badge">
+        <a href="https://github.com/shower/shower">Fork me on GitHub</a>
+    </footer>
+
+    <div class="progress"></div>
+
+    <script src="shower/shower.min.js"></script>
+    <!-- Copyright © 2018 Yours Truly, Famous Inc. -->
+
+</body>
+</html>
