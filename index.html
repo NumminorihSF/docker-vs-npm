@@ -17,7 +17,7 @@
         <h1>Docker vs. npm</h1>
     </header>
 
-    <section class="slide">
+    <section id="cover" class="slide">
         <h2>Docker vs. npm</h2>
         <p>Brought to you by <a href="https://github.com/NumminorihSF">Konstantin Petryaev</a></p>
         <style>
@@ -224,11 +224,15 @@
         <h2>Why should i use <code>npm ci</code></h2>
         <ul>
             <li>It's a command for CI. Surprise</li>
-            <li>It's faster than <code>npm i</code></li>
-            <li>It's clean installation</li>
-            <li>It fails if package.json not match lock file, it fails</li>
-            <li>It does not update lock file. Just use it for installation</li>
+            <li class="next">It's faster than <code>npm i</code></li>
+            <li class="next">It's clean installation</li>
+            <li class="next">It fails if package.json not match lock file, it fails</li>
+            <li class="next">It does not update lock file. Just use it for installation</li>
         </ul>
+    </section>
+
+    <section class="slide">
+        <h2 class="shout">Don't change deps' sections manually</h2>
     </section>
 
     <section class="slide">
@@ -319,7 +323,7 @@
             <code>RUN apk add bash</code>
             <code>RUN apk add --no-cache --virtual .gyp \</code>
             <code>      python make g++ zlib-dev git python build-base autoconf automake nasm \</code>
-            <code>    && npm ci \</code>
+            <code>    && npm ci</code>
             <code>COPY . .</code>
             <code>RUN npm run build</code>
         </pre>
@@ -374,14 +378,15 @@
     </section>
 
     <section class="slide">
-        <h2>Dockerfile</h2>
-        <pre style="font-size: 0.7em">
-            <code>.git</code>
-            <code>node_modules</code>
-            <code>configs</code>
-            <code>dists</code>
-            <code>docker's files</code>
-        </pre>
+        <h2>.dockerignore default</h2>
+        <ul>
+            <li><code>.git</code></li>
+            <li><code>node_modules</code></li>
+            <li>dev-tool-configs</li>
+            <li>dists</li>
+            <li>reports</li>
+            <li>docker's files</li>
+        </ul>
     </section>
 
     <section class="slide">
@@ -401,6 +406,62 @@
     </section>
 
     <section class="slide">
+        <h2>Don't write large .dockerignore</h2>
+        <table>
+            <tbody>
+            <tr>
+                <th scope="row">Lines</th><td>282</td><td>9</td>
+            </tr>
+            <tr class="next">
+                <th scope="row">Context</th><td>41.05 MB</td><td>68.03 MB</td>
+            </tr>
+            <tr class="next">
+                <th scope="row">Time w/o cache</th><td>~ 161 s</td><td>~ 150.5 s</td>
+            </tr>
+            <tr class="next">
+                <th scope="row">Time with cache</th><td>~ 34 s</td><td>~ 2.5 s</td>
+            </tr>
+            <tr class="next">
+                <th scope="row">Result size with multi-stage</th><td colspan="2"><strong>the same</strong></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code>ENV NODE_ENV=${APP_ENV:-development}</code>
+            <code>COPY package.json package-lock.json ./</code>
+            <code>RUN apk add bash</code>
+            <code>RUN apk add --no-cache \</code>
+            <code>      python make g++ zlib-dev git python build-base autoconf automake nasm \</code>
+            <code>    && npm ci</code>
+            <code><mark>COPY . .</mark> <strong># Use ignore-file <strike>or</strike> and copy only specific files</strong></code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code>ENV NODE_ENV=${APP_ENV:-development}</code>
+            <code>COPY package.json package-lock.json ./</code>
+            <code>RUN apk add bash</code>
+            <code>RUN apk add --no-cache \</code>
+            <code>      python make g++ zlib-dev git python build-base autoconf automake nasm \</code>
+            <code>    && npm ci</code>
+            <code><mark>COPY ./public ./public/</mark> <strong># Use ignore-file <strike>or</strike> and copy only specific files</strong></code>
+            <code><mark>COPY ./src ./src/</mark></code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
         <h2>Dockerfile</h2>
         <pre style="font-size: 0.7em">
             <code>FROM node:8.12.0-alpine</code>
@@ -411,7 +472,8 @@
             <code>RUN apk add --no-cache \</code>
             <code>      python make g++ zlib-dev git python build-base autoconf automake nasm \</code>
             <code>    <mark>&& npm ci</mark> <strong class="next"># Move into separated command</strong></code>
-            <code>COPY . .</code>
+            <code>COPY ./public ./public/</code>
+            <code>COPY ./src ./src/</code>
             <code>RUN npm run build</code>
         </pre>
     </section>
@@ -427,7 +489,8 @@
             <code>RUN apk add --no-cache \</code>
             <code>      python make g++ zlib-dev git python build-base autoconf automake nasm</code>
             <code><mark>RUN npm ci</mark> <strong># Move into separated command</strong></code>
-            <code>COPY . .</code>
+            <code>COPY ./public ./public/</code>
+            <code>COPY ./src ./src/</code>
             <code>RUN npm run build</code>
         </pre>
     </section>
@@ -443,7 +506,8 @@
             <code>RUN apk add --no-cache \</code>
             <code>      python make g++ zlib-dev git python build-base autoconf automake nasm</code>
             <code>RUN npm ci</code>
-            <code>COPY . .</code>
+            <code>COPY ./public ./public/</code>
+            <code>COPY ./src ./src/</code>
             <code>RUN npm run build</code>
         </pre>
     </section>
@@ -459,7 +523,8 @@
             <code>      python make g++ zlib-dev git python build-base autoconf automake nasm</code>
             <code><mark>COPY package.json package-lock.json ./</mark> <strong># Move after the <mark>apk add</mark></strong></code>
             <code>RUN npm ci</code>
-            <code>COPY . .</code>
+            <code>COPY ./public ./public/</code>
+            <code>COPY ./src ./src/</code>
             <code>RUN npm run build</code>
         </pre>
     </section>
@@ -475,7 +540,8 @@
             <code>      python make g++ zlib-dev git python build-base autoconf automake nasm</code>
             <code>COPY package.json package-lock.json ./</code>
             <code>RUN npm ci</code>
-            <code>COPY . .</code>
+            <code>COPY ./public ./public/</code>
+            <code>COPY ./src ./src/</code>
             <code>RUN npm run build</code>
         </pre>
     </section>
@@ -490,7 +556,8 @@
             <code>      <mark>bash</mark> python make g++ zlib-dev git python build-base autoconf automake nasm</code>
             <code>COPY package.json package-lock.json ./</code>
             <code>RUN npm ci</code>
-            <code>COPY . .</code>
+            <code>COPY ./public ./public/</code>
+            <code>COPY ./src ./src/</code>
             <code>RUN npm run build</code>
         </pre>
     </section>
@@ -509,9 +576,21 @@
             <code>      bash python make g++ zlib-dev git python build-base autoconf automake nasm</code>
             <code>COPY package.json package-lock.json ./</code>
             <code><mark>RUN npm ci</mark></code>
-            <code>COPY . .</code>
+            <code>COPY ./public ./public/</code>
+            <code>COPY ./src ./src/</code>
             <code>RUN npm run build</code>
         </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Lets see package.json</h2>
+        <ul>
+            <li><code>dependencies</code> - required by your application in production</li>
+            <li class="next"><code>devDependencies</code> - only needed for development, testing and build</li>
+            <li class="next"><code>peerDependencies</code> - needed by your package but aren't its dependencies</li>
+            <li class="next"><code>bundledDependencies</code> - package names that will be bundled when publishing the package</li>
+            <li class="next"><code>optionalDependencies</code> -  required by your application in production, but app still may works if installation fails</li>
+        </ul>
     </section>
 
     <section class="slide">
@@ -534,7 +613,8 @@
             <code>      bash python make g++ zlib-dev git python build-base autoconf automake nasm</code>
             <code>COPY package.json package-lock.json ./</code>
             <code><mark>RUN npm --production=false ci</mark></code>
-            <code>COPY . .</code>
+            <code>COPY ./public ./public/</code>
+            <code>COPY ./src ./src/</code>
             <code>RUN npm run build</code>
         </pre>
     </section>
@@ -549,7 +629,8 @@
             <code>      bash python make g++ zlib-dev git python build-base autoconf automake nasm</code>
             <code>COPY package.json package-lock.json ./</code>
             <code>RUN npm --production=false ci</code>
-            <code>COPY . .</code>
+            <code>COPY ./public ./public/</code>
+            <code>COPY ./src ./src/</code>
             <code>RUN npm run build</code>
         </pre>
     </section>
@@ -578,9 +659,99 @@
             <code>      bash python make g++ zlib-dev git python build-base autoconf automake nasm</code>
             <code>COPY package.json package-lock.json ./</code>
             <code>RUN npm --production=false ci</code>
-            <code>COPY . .</code>
+            <code>COPY ./public ./public/</code>
+            <code>COPY ./src ./src/</code>
             <code>RUN npm run build</code>
         </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code>ARG APP_API_URL</code>
+            <code><mark>ENV NODE_ENV=production</mark> <strong class="next"># Lets move after env preparation</strong></code>
+            <code><mark>ENV APP_API_URL=${APP_API_URL}</mark></code>
+            <code>RUN apk add --no-cache \</code>
+            <code>      bash python make g++ zlib-dev git python build-base autoconf automake nasm</code>
+            <code>COPY package.json package-lock.json ./</code>
+            <code>RUN npm --production=false ci</code>
+            <code>COPY ./public ./public/</code>
+            <code>COPY ./src ./src/</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code>ARG APP_API_URL</code>
+            <code>RUN apk add --no-cache \</code>
+            <code>      bash python make g++ zlib-dev git python build-base autoconf automake nasm</code>
+            <code>COPY package.json package-lock.json ./</code>
+            <code>RUN npm --production=false ci</code>
+            <code><mark>ENV NODE_ENV=production</mark> <strong># Lets move after env preparation</strong></code>
+            <code><mark>ENV APP_API_URL=${APP_API_URL}</mark></code>
+            <code>COPY ./public ./public/</code>
+            <code>COPY ./src ./src/</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code>ARG APP_API_URL</code>
+            <code>RUN apk add --no-cache \</code>
+            <code>      bash python make g++ zlib-dev git python build-base autoconf automake nasm</code>
+            <code>COPY package.json package-lock.json ./</code>
+            <code><mark>RUN npm --production=false ci</mark> <strong class="next"># May be just <mark>npm ci</mark></strong></code>
+            <code>ENV NODE_ENV=production</code>
+            <code>ENV APP_API_URL=${APP_API_URL}</code>
+            <code>COPY ./public ./public/</code>
+            <code>COPY ./src ./src/</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code>ARG APP_API_URL</code>
+            <code>RUN apk add --no-cache \</code>
+            <code>      bash python make g++ zlib-dev git python build-base autoconf automake nasm</code>
+            <code>COPY package.json package-lock.json ./</code>
+            <code><mark>RUN npm ci</mark> <strong># May be just <mark>npm ci</mark></strong></code>
+            <code>ENV NODE_ENV=production</code>
+            <code>ENV APP_API_URL=${APP_API_URL}</code>
+            <code>COPY ./public ./public/</code>
+            <code>COPY ./src ./src/</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
+        <h2 class="shout">It's still not as fast as it can be</h2>
+    </section>
+
+    <section class="slide">
+        <h2>Make it faster</h2>
+        <ul>
+            <li>Don't use dependencies from git</li>
+            <li class="next">Try to prevent bundling or build dependencies on install step</li>
+            <li class="next">Possibly it would better to use multiple <code>COPY</code> steps</li>
+            <li class="next">Ignore all files you don't need inside container</li>
+            <li class="next">Skip all unnecessary work</li>
+            <li class="next">Don't do the work twice</li>
+            <li class="next">Find a balance between manual <code>COPY</code> and <code>.dockerignore</code></li>
+        </ul>
     </section>
 
     <section class="slide">
