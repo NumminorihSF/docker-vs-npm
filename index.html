@@ -742,6 +742,23 @@
     </section>
 
     <section class="slide">
+        <h2>npm progress</h2>
+        <table>
+            <tbody>
+            <tr>
+                <th scope="row">Regular</th><td>~25.092 s</td><td>100%</td>
+            </tr>
+            <tr class="next">
+                <th scope="row"><code>npm --no-progress ci</code></th><td>~24.584 s</td><td>98%</td>
+            </tr>
+            <tr class="next">
+                <th scope="row"><code>npm set progress=false ci</code></th><td>~23.426 s</td><td>93%</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="slide">
         <h2>Make it faster</h2>
         <ul>
             <li>Don't use dependencies from git</li>
