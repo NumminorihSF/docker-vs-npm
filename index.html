@@ -759,6 +759,25 @@
     </section>
 
     <section class="slide">
+        <h2>Dockerfile</h2>
+        <pre style="font-size: 0.7em">
+            <code>FROM node:8.12.0-alpine</code>
+            <code>ARG APP_ENV</code>
+            <code>ARG APP_API_URL</code>
+            <code>RUN apk add --no-cache \</code>
+            <code>      bash python make g++ zlib-dev git python build-base autoconf automake nasm</code>
+            <code><mark>RUN npm set progress=false</mark></code>
+            <code>COPY package.json package-lock.json ./</code>
+            <code>RUN npm ci</code>
+            <code>ENV NODE_ENV=production</code>
+            <code>ENV APP_API_URL=${APP_API_URL}</code>
+            <code>COPY ./public ./public/</code>
+            <code>COPY ./src ./src/</code>
+            <code>RUN npm run build</code>
+        </pre>
+    </section>
+
+    <section class="slide">
         <h2>Make it faster</h2>
         <ul>
             <li>Don't use dependencies from git</li>
